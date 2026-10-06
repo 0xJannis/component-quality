@@ -1,0 +1,54 @@
+import assert from 'node:assert/strict';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const required = ['SKILL.md', 'README.md', 'LICENSE', 'agents/openai.yaml'];
+for (const file of required) assert(existsSync(join(root, file)), `Missing ${file}`);
+
+const skill = readFileSync(join(root, 'SKILL.md'), 'utf8');
+const frontmatter = skill.match(/^---\r?\n([\s\S]+?)\r?\n---(?:\r?\n|$)/);
+assert(frontmatter, 'SKILL.md needs YAML frontmatter');
+// This package intentionally uses plain one-line name and description fields.
+const name = frontmatter[1].match(/^name: ([a-z0-9]+(?:-[a-z0-9]+)*)$/m)?.[1];
+const description = frontmatter[1].match(/^description: (.+)$/m)?.[1];
+assert(name === 'component-quality', 'Unexpected skill name');
+assert(name.length <= 64, 'Name exceeds the skill specification');
+assert(description?.length > 0 && description.length <= 1024, 'Invalid description');
+assert(skill.split('\n').length < 500, 'Move detailed instructions to references');
+assert(/^license: MIT$/m.test(frontmatter[1]), 'License metadata must match LICENSE');
+
+function walk(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (['.git', 'node_modules'].includes(entry.name)) return [];
+    const path = join(directory, entry.name);
+    assert(!entry.isSymbolicLink(), `Unexpected symlink: ${relative(root, path)}`);
+    return entry.isDirectory() ? walk(path) : [path];
+  });
+}
+
+const files = walk(root);
+for (const file of files) {
+  const path = relative(root, file);
+  assert(!/\.(?:tsx?|jsx?|css|scss|html|png|jpe?g|zip)$/i.test(path),
+    `Application source or asset must not ship in the skill: ${path}`);
+  if (!path.endsWith('.md')) continue;
+  const text = readFileSync(file, 'utf8').replace(/```[\s\S]*?```/g, '');
+  for (const match of text.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)) {
+    const target = match[1].replace(/^<|>$/g, '').split('#')[0];
+    if (!target || /^[a-z][a-z0-9+.-]*:/i.test(target)) continue;
+    const resolved = resolve(dirname(file), decodeURIComponent(target));
+    assert(!relative(root, resolved).startsWith('..'), `Link leaves package: ${path}: ${target}`);
+    assert(existsSync(resolved), `Broken link: ${path}: ${target}`);
+  }
+}
+
+const refs = files.filter((file) => relative(root, file).startsWith('references/'));
+for (const ref of refs) {
+  assert(skill.includes(relative(root, ref)), `Reference is undiscoverable: ${ref}`);
+}
+const metadata = readFileSync(join(root, 'agents/openai.yaml'), 'utf8');
+assert(metadata.includes('$component-quality'), 'Default prompt must invoke the skill');
+assert(metadata.includes('allow_implicit_invocation: true'), 'Keep automatic discovery enabled');
+console.log(`Skill package valid: ${files.length} files, ${refs.length} linked reference guides.`);
