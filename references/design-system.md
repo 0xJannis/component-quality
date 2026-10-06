@@ -107,3 +107,15 @@ Shadows provide lift; borders provide structure. Keep solid surfaces, with blur 
 - Align icon/label optically. Prefer 16px/20px native icons; match stroke weight to text. One family per surface, `currentColor` for state coloring.
 
 Long translated labels, multi-line errors, zero/large values, empty lists, and missing avatars must fit. Use logical spacing for RTL. Truncate only when the full value remains practically accessible.
+
+## Icon and image finish
+
+Judge icons at their smallest actual rendered size. Fine detail that looks clear at 48px can disappear at 16px; use an appropriate simplified glyph and the set's native grid rather than shrinking detailed artwork arbitrarily. Compare optical weight to the adjacent label. For an adjustable 24px stroke set, 1.5px beside regular text and 2px beside medium/semibold text are useful starting points; preserve the set's conventions and inspect the result at render size.
+
+An asymmetric glyph may need a small optical adjustment within its fixed box. Correct the glyph or shared wrapper before adding inconsistent margins at every call site. Use logical padding around labels; a play triangle's optical correction belongs to the physical glyph, not automatically to reading direction.
+
+Use `currentColor` so the same icon follows text states. A filled/outline pair can clarify selection when the set supports it; preserve an additional semantic state rather than relying on the swap alone. Do not animate icons merely because their color changes.
+
+Mirror navigation arrows or chevrons when their meaning follows reading direction, using a selective utility such as `rtl:-scale-x-100`. Do not blanket-mirror logos, checkmarks, physical objects, or media controls. Check directional meaning and any overlays on composite glyphs.
+
+Where images or avatars need edge definition, draw the quiet 1px pure-black/light or pure-white/dark outline inside the image edge so dimensions do not change. Match its radius to the crop. A decorative edge is separate from the focus indicator on an interactive image; neither may hide the other.

@@ -24,6 +24,8 @@ Use the running local application, existing component previews, and the project'
 | Layout pressure | Around 320px and relevant breakpoints; short viewport; 200% zoom; large text; dense content | Actions remain reachable; local table/canvas scrolling; no clipped focus, hidden validation, or unreachable dialog footer |
 | Theme and motion | Switch theme with a popup open; test both themes during loading/error/selection; enable reduced motion | Portals inherit tokens; content and focus remain legible; no state reset; meaning survives with motion removed |
 | Component lifecycle | Mount/unmount repeatedly; controlled value changes from a parent; development Strict Mode when already enabled | No duplicate listeners, timers, effects, or operations; parent state remains authoritative; no hydration errors |
+| Timed feedback | Hide and restore the tab during a toast; focus its action; move across a stack; update and dismiss concurrently | Reading time and focus are respected; one current message per operation; no flicker, swallowed action, or duplicate announcement |
+| Animation interruption | Reverse halfway; switch theme while exiting; enable reduced motion; add a realistic rendering workload | Latest state wins; no queued interaction, first-frame jump, unintended movement, clipped focus, or invisible blocker |
 
 Choose realistic boundaries from the component's actual contract. Do not invent arbitrary input limits, infinite requests, or impossible prop combinations. When randomized or property-based checks are useful and supported by existing tools, bound their inputs and preserve the seed and failing sequence.
 
@@ -37,6 +39,7 @@ Failures often live between otherwise working components. Exercise sequences tha
 - **Board/editor:** move an item while filtered, cancel a drag, then reject persistence. Items are not lost or duplicated; rollback uses stable IDs; a keyboard or explicit move alternative remains usable.
 - **Date/range/slider:** test equal endpoints, min/max, disabled values, clear/reset, and an external controlled update. Values stay valid without jumping, NaN, inverted ranges, or inaccessible handles.
 - **Navigation:** collapse the sidebar, open a submenu, change route, and resize to mobile. Current location stays correct; focus, mobile dismissal, and scroll position follow the application's intended behavior.
+- **Animated controls:** refresh the page with a selected tab or active toggle, then change it by keyboard and pointer. The initial state is settled, repeated actions remain immediate, and reduced motion suppresses individual scale/translate properties as well as transform animations.
 
 For an unfamiliar component, combine its most consequential state transition with an input boundary, an interruption, and a constrained composition. Test the relevant combinations rather than mechanically multiplying every possible state.
 

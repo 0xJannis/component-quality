@@ -132,6 +132,14 @@ Side sheets use a flat frame, edge divider, and roughly 480–560px constrained 
 
 Tooltips provide concise nonessential help with a short initial delay and immediate adjacent activation. Required instructions remain accessible outside tooltips. Accordions use flat disclosure rows, expanded state, and restrained nested styling.
 
+## Toasts and transient feedback
+
+Match the message's lifetime to the user's opportunity to read or act. Preserve the installed primitive's timer behavior; pause auto-dismiss while the document is hidden and while the user is hovering or focusing an actionable toast where appropriate. Resume from remaining time instead of repeatedly resetting or expiring everything on return. Critical errors and required actions need a persistent route to recovery.
+
+Keep a stable identity for each operation so pending, success, and failure update the intended notification. Rapid events must not cause a stack to jump, replay old entrances, duplicate announcements, or dismiss a newly updated message. Prevent pointer gaps between stacked items from briefly ending hover; any enlarged hover bridge must not block unrelated controls.
+
+Swipe and close controls use the same dismissal contract, retain accessible names, and work without dragging. Announcements should be as urgent as the actual event requires. Motion does not determine whether the operation succeeded. Check hidden-tab timing, focus, repeated events, dismissal during an update, and reduced motion using the existing primitive rather than replacing its behavior for a visual flourish.
+
 ## Remaining families
 
 | Family | Required decisions |

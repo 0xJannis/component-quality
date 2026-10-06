@@ -53,6 +53,7 @@ For other agents, ask to use the `component-quality` skill using that agent's su
 - **Tailwind implementation:** utilities and shared variants for component styles, semantic tokens for themes, version-aware integration, and no component CSS files.
 - **Verification:** actual interaction and rendered checks for the requested scope, with explicit reporting of anything that could not be tested.
 - **Breaking cases:** deliberately challenge components with rapid actions, stale responses, failed saves, extreme content, nested overlays, and constrained layouts. Fix the cause, check recovery, and add focused regression coverage for significant failures.
+- **Motion and feedback:** choose animation by purpose and frequency, settle controls on first render, preserve interruption and reduced motion, inspect rendering cost, and handle toast timers and gesture cancellation correctly.
 
 The skill adapts the existing application rather than forcing every product into a dashboard. It does not require switching component frameworks. React Native needs a platform-appropriate Tailwind adapter and native behavior; web recipes are not automatically portable to it.
 
@@ -74,6 +75,7 @@ references/component-recipes.md   Buttons, tables, navigation, and more
 references/tailwind.md            Tokens and utility implementation
 references/react-integration.md   Framework and component integration
 references/interaction.md         States, semantics, and motion
+references/motion-performance.md  First render, interruption, and rendering cost
 references/application-patterns.md Application and library composition
 references/verification.md        Coverage and functional checks
 references/adversarial-testing.md Breaking cases, recovery, and regression checks

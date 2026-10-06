@@ -29,6 +29,8 @@ Inspect desktop and around 390px or the product's narrow breakpoint, plus interm
 - Page width stays bounded. Intended table/canvas scrolling works locally.
 - Long names, translation, validation, missing images, zero/large values fit.
 - Reduced motion preserves meaning; theme swaps do not smear through transitions.
+- Initial controls render in their settled state. Tailwind transition properties match the generated movement properties; reduced motion suppresses each of them.
+- Small icons remain recognizable; optical alignment and selective RTL mirroring are correct. Decorative duplicates cannot receive focus or duplicate accessible labels.
 
 ## Defining interactions
 
@@ -47,7 +49,7 @@ Inspect desktop and around 390px or the product's narrow breakpoint, plus interm
 | Kanban/workflow | Add/edit/move/remove, filtered data retention, stable IDs, valid edges, alternatives |
 | Media/upload/carousel | Load/error, formats, progress/cancel/retry, controls, bounds, fallback |
 | Charts/progress | Values/units, zero/empty, tooltip, accessible summary, contrast |
-| Feedback | Trigger/action/dismiss, timers, announcements, repeats, reduced motion |
+| Feedback | Trigger/action/dismiss, hidden-tab and hover/focus timers, stack pointer continuity, announcements, repeats, reduced motion |
 | Static display/layout | Semantics, themes, overflow, content stress, alignment; interactions N/A |
 
 For "every component", each required entry needs a render check and its defining behavior checked when interactive. Record N/A for static components. One tested instance does not cover every possible consumer configuration; state what was exercised.
@@ -59,6 +61,8 @@ Run the relevant cases from [adversarial testing](adversarial-testing.md) after 
 Use deterministic fixtures and existing test tools to reproduce timing or data failures. Assertions should express the user-visible contract: one submission, newest search result, retained draft, correct selection, reachable action, or restored focus. A screenshot alone cannot establish these outcomes.
 
 Record `Component | Breaking case | Expected recovery | Observed result | Fix / retest`. A reproduced failure stays open until the original case passes after the fix. Include important untested combinations in the final limitations rather than implying exhaustive coverage.
+
+For changed animation, use [motion performance](motion-performance.md) to check initial render, interruption, property output, and actual rendering cost. Slow playback helps diagnose timing but does not replace normal-speed interaction checks. Record unavailable performance/device checks as unverified.
 
 ## Fix and recheck
 

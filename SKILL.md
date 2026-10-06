@@ -3,7 +3,7 @@ name: component-quality
 description: Redesign and polish React applications, shadcn components, and custom interfaces with precise Tailwind styling. Use for frontend redesigns, component improvements, new screens, and visual quality reviews. Covers tactile buttons, aligned tables, neutral sidebars, layered shadows, light and dark themes, and adversarial interaction checks that find and fix breaking cases. Adapt to the existing React framework and component system while preserving behavior. Excludes backend-only and content-only work.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Component Quality — application redesign
@@ -39,6 +39,8 @@ For implementation, read [the design system](references/design-system.md) and re
 
 For an application or library, also read [application composition](references/application-patterns.md). Read [interaction and motion](references/interaction.md) before changing behavior or animation. Finish with [verification](references/verification.md).
 
+For animated components, also read [motion performance](references/motion-performance.md): first-render behavior, property selection, interruption, rendering cost, and reduced-motion checks are part of component quality.
+
 Read [adversarial component testing](references/adversarial-testing.md) before verifying interactive changes or a complete redesign. Use its failure cases and recovery expectations to test the requested scope, including static components' content and layout boundaries.
 
 Read [React integration](references/react-integration.md) to adapt the workflow to the installed framework, shadcn, headless primitives, or a custom design system. Read [Tailwind implementation](references/tailwind.md) when editing tokens and component variants. This package contains instructions only; modify the target application's existing source rather than installing a replacement component library.
@@ -58,6 +60,8 @@ Fix shared tokens, then primitives, then composed controls, then page layouts:
 Use existing accessible primitives. In a new React project, Base UI is a suitable unstyled behavior layer; shadcn source is also fully editable. Neither dictates the visual style. Avoid replacing working Radix/shadcn behavior simply to gain styling freedom. Align API names and state attributes with the installed version.
 
 Use explicit variants instead of repeated local exceptions. Primary color should be changeable through semantic tokens application-wide and an optional per-instance variant. Changing primary hue must not change neutral row hover or sidebar selection.
+
+Make the default variant complete before adding customization. Reuse the host's providers, tokens, and motion system; do not require new setup or dependencies merely to obtain polished defaults. Match related controls' timing and density. Animation must have a purpose and must never delay input, conceal a state, or substitute for correct behavior.
 
 Avoid dynamically assembled Tailwind names such as `bg-${color}-600`. Use complete static class maps or CSS custom properties for runtime values. Decorative layers inherit radii, ignore pointer input, and do not clip focus rings.
 
