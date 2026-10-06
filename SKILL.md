@@ -1,9 +1,9 @@
 ---
 name: component-quality
-description: Redesign and polish React applications, shadcn components, and custom interfaces with precise Tailwind styling. Use for frontend redesigns, component improvements, new screens, and visual quality reviews. Covers tactile buttons, aligned tables, neutral sidebars, layered shadows, complete states, and light and dark themes. Adapt to the existing React framework and component system while preserving behavior. Excludes backend-only and content-only work.
+description: Redesign and polish React applications, shadcn components, and custom interfaces with precise Tailwind styling. Use for frontend redesigns, component improvements, new screens, and visual quality reviews. Covers tactile buttons, aligned tables, neutral sidebars, layered shadows, light and dark themes, and adversarial interaction checks that find and fix breaking cases. Adapt to the existing React framework and component system while preserving behavior. Excludes backend-only and content-only work.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Component Quality — application redesign
@@ -19,6 +19,7 @@ Turn the requested application or component into a coherent, carefully finished 
 5. **Preserve the application.** Retain its framework, routes, data, permissions, integrations, content, accessible behaviors, and established APIs. Restyle shared primitives before changing every call site. Do not replace working interactions with static mockups, simulate persistence without disclosure, or change product semantics for visual convenience.
 6. **Support both themes.** For a complete system, ship light and dark tokens and verify both. Respect an explicit single-theme request. Preserve a supplied brand palette for intentional actions while keeping generic surfaces neutral.
 7. **Inspect the rendered result.** Types and builds do not prove menus, tables, focus, responsive layouts, or theme portals work. Track actual coverage; never label an untested state as verified or promise that no future use can break.
+8. **Actively try to break affected components.** Go beyond the expected path: challenge relevant input boundaries, rapid actions, async failures, state combinations, and constrained layouts. Reproduce failures, fix their cause, and re-run the breaking case. A component must recover predictably without lost input, stale results, duplicate actions, or trapped focus.
 
 ## Start with the real application
 
@@ -37,6 +38,8 @@ Keep a compact working inventory: component/route, shared primitive, states, the
 For implementation, read [the design system](references/design-system.md) and relevant sections of [component recipes](references/component-recipes.md).
 
 For an application or library, also read [application composition](references/application-patterns.md). Read [interaction and motion](references/interaction.md) before changing behavior or animation. Finish with [verification](references/verification.md).
+
+Read [adversarial component testing](references/adversarial-testing.md) before verifying interactive changes or a complete redesign. Use its failure cases and recovery expectations to test the requested scope, including static components' content and layout boundaries.
 
 Read [React integration](references/react-integration.md) to adapt the workflow to the installed framework, shadcn, headless primitives, or a custom design system. Read [Tailwind implementation](references/tailwind.md) when editing tokens and component variants. This package contains instructions only; modify the target application's existing source rather than installing a replacement component library.
 
@@ -68,13 +71,15 @@ When examples or a library are requested, use actual exported components, demons
 
 ## Quality gate
 
-Before finishing, every affected component must have a deliberate surface/contour, coherent geometry, readable type, aligned icons, complete relevant states, usable keyboard/touch behavior, and correct light/dark rendering. Shared components must compose correctly in their real screens. If one of these fails, fix it and recheck affected consumers.
+Before finishing, every affected component must have a deliberate surface/contour, coherent geometry, readable type, aligned icons, complete relevant states, usable keyboard/touch behavior, and correct light/dark rendering. Shared components must compose correctly in their real screens and withstand the relevant breaking cases. If one of these fails, fix it and recheck affected consumers. Report any case that could not be exercised instead of treating it as a pass.
 
 ## Complete the work
 
 Exercise each affected component family and every route in a whole-application redesign. Inspect both themes, desktop and narrow layouts, keyboard use, state changes, long content, and overlay stacking. Revisit every distinct composition affected by shared token changes; one passing button example does not validate an application.
 
-Fix defects, run relevant project checks, and check a production build when styling order, server rendering, or generated routes could differ from development. Record what passed and what could not be verified. Once applicable checks pass, broaden testing only for a new change or unresolved concern.
+After the baseline works, deliberately stress the affected components using local fixtures or the project's test environment. Check the expected recovery as well as the initial failure: errors must be actionable, entered data must remain available, and the component must become usable again. Add focused regression coverage for significant reproduced failures using the project's existing tools.
+
+Fix defects, run relevant project checks, and check a production build when styling order, server rendering, or generated routes could differ from development. Record the breaking cases attempted, fixes, retest results, and what could not be verified. Once applicable checks pass, broaden testing only for a new change or unresolved concern.
 
 Report the outcome, checks, and material limits concisely. For an audit/review, use `Severity | Location | Before | After | Why`, one row per root cause. Use `Not verified` for unobserved states. A failed functional check remains a blocker; a style preference does not justify an approval gate. For implementation work, fix findings instead of stopping at a review table.
 

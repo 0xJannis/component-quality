@@ -1,6 +1,6 @@
 interface:
   display_name: "Component Quality"
   short_description: "Precise Tailwind polish for React applications"
-  default_prompt: "Use $component-quality to redesign this React application's frontend with Tailwind, precise component details, neutral light and dark themes, and verified interactions while preserving its functionality."
+  default_prompt: "Use $component-quality to redesign this React application's frontend with Tailwind, precise component details, and neutral light and dark themes. Preserve functionality, actively try to break affected components, fix the failures, and verify recovery."
 policy:
   allow_implicit_invocation: true

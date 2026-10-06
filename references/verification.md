@@ -2,9 +2,9 @@
 
 Coverage describes observations, not confidence. For complete application/library work, cover every unique component and route/composition. Shared primitives can share behavior tests; every distinct composition still needs rendered inspection.
 
-| Component / route | Light | Dark | Desktop / narrow | Keyboard | States | Result / evidence |
-| --- | --- | --- | --- | --- | --- | --- |
-| Actual name/path | Pass / fail / not verified | Same | Widths checked | Actions checked | States checked | Test/screenshot/defect |
+| Component / route | Light / dark | Widths | Keyboard / states | Breaking cases | Result / evidence |
+| --- | --- | --- | --- | --- | --- |
+| Actual name/path | Pass / fail / not verified | Widths checked | Actions checked | Input, sequence, failure tested | Test/screenshot/defect |
 
 Use existing tools. Test observable behavior, geometry, state, or useful invariants, not class strings that mirror implementation. Add tests for substantial logic/shared behavior; small reversible polish does not need new infrastructure.
 
@@ -52,9 +52,17 @@ Inspect desktop and around 390px or the product's narrow breakpoint, plus interm
 
 For "every component", each required entry needs a render check and its defining behavior checked when interactive. Record N/A for static components. One tested instance does not cover every possible consumer configuration; state what was exercised.
 
+## Challenge the component
+
+Run the relevant cases from [adversarial testing](adversarial-testing.md) after the normal behavior works. Static components still need long/empty content, constrained layout, theme, and zoom checks. Interactive components also need boundary inputs, interrupted sequences, and applicable failure/recovery checks.
+
+Use deterministic fixtures and existing test tools to reproduce timing or data failures. Assertions should express the user-visible contract: one submission, newest search result, retained draft, correct selection, reachable action, or restored focus. A screenshot alone cannot establish these outcomes.
+
+Record `Component | Breaking case | Expected recovery | Observed result | Fix / retest`. A reproduced failure stays open until the original case passes after the fix. Include important untested combinations in the final limitations rather than implying exhaustive coverage.
+
 ## Fix and recheck
 
-Prioritize broken/inaccessible interactions, then layout/contrast, then polish. Fix root causes and retest affected consumers. Check production when compilation/rendering differs.
+Prioritize data loss, duplicate actions, broken/inaccessible interactions, then layout/contrast, then polish. Fix root causes and retest the original failure, normal behavior, and affected consumers. Add focused regression coverage for significant failures where the project's tools support it. Check production when compilation/rendering differs. Do not hide an exception, disable an assertion, or remove a feature to make the check pass.
 
 If rendering is unavailable, finish source/build checks and mark visual states `Not verified`. Physical touch and slow-motion checks must not be claimed without performing them. Never silently change an unverified row to pass.
 

@@ -38,7 +38,8 @@ Or give it a focused task:
 ```text
 Use $component-quality to polish our shadcn buttons, sidebar, and data table.
 Use neutral gray hover states and a green primary action. Preserve their APIs
-and check keyboard behavior, loading states, and narrow layouts in both themes.
+and actively try to break them with rapid actions, failed requests, boundary
+inputs, and narrow layouts in both themes. Fix the failures and retest.
 ```
 
 For other agents, ask to use the `component-quality` skill using that agent's supported invocation method. Automatic selection depends on your agent and its configuration; explicit invocation gives the clearest scope.
@@ -51,12 +52,15 @@ For other agents, ask to use the `component-quality` skill using that agent's su
 - **Existing React projects:** Next.js, Vite, React Router, and other React web frameworks; editable shadcn source, headless primitives, and custom components. Preserve the installed framework and behavior layer.
 - **Tailwind implementation:** utilities and shared variants for component styles, semantic tokens for themes, version-aware integration, and no component CSS files.
 - **Verification:** actual interaction and rendered checks for the requested scope, with explicit reporting of anything that could not be tested.
+- **Breaking cases:** deliberately challenge components with rapid actions, stale responses, failed saves, extreme content, nested overlays, and constrained layouts. Fix the cause, check recovery, and add focused regression coverage for significant failures.
 
 The skill adapts the existing application rather than forcing every product into a dashboard. It does not require switching component frameworks. React Native needs a platform-appropriate Tailwind adapter and native behavior; web recipes are not automatically portable to it.
 
 ## Quality standard
 
 The agent works from tokens to shared primitives, composites, and screens. Every affected component is checked for its surface, geometry, typography, states, keyboard and touch behavior, responsive layout, and both themes. Shared changes are checked in their actual compositions.
+
+After normal behavior works, the agent actively tries to break the affected components using local fixtures or the project's test environment. It checks that data is retained, stale responses cannot overwrite current results, repeated actions do not duplicate operations, and focus and controls recover correctly. A discovered failure must be fixed and its original sequence retested; a checklist alone is not completion.
 
 The skill guides implementation and verification; it cannot guarantee an identical result from every model or prove every future configuration works. It requires truthful coverage and preserves existing functionality. You remain in control of the task's scope, brand choices, and publication permissions.
 
@@ -72,10 +76,11 @@ references/react-integration.md   Framework and component integration
 references/interaction.md         States, semantics, and motion
 references/application-patterns.md Application and library composition
 references/verification.md        Coverage and functional checks
-scripts/validate.mjs              Package integrity checks
+references/adversarial-testing.md Breaking cases, recovery, and regression checks
+.github/workflows/validate.yml    Repository integrity checks
 ```
 
-Maintainers can run `node scripts/validate.mjs` with Node.js 20 or later. CI runs the same check. It validates package structure, metadata, reference links, and the absence of application source; it does not render or evaluate a target application.
+No scripts folder or bundled executable is needed to use this skill. Repository CI checks package structure, metadata, reference links, and the absence of application source. Component testing happens in the target project's own tools; repository CI does not render or evaluate that application.
 
 ## License
 
